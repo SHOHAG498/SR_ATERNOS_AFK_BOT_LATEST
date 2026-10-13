@@ -37,8 +37,8 @@ const botsConfig = [
   },
   {
     name: 'Server_2_Bot',
-    host: 'SRSHOHAG27.aternos.me',
-    port: 62744,
+    host: 'SRJavaBE.aternos.me',
+    port: 32953,
     username: 'MODERATOR',
     version: false // Auto version detect
   }
