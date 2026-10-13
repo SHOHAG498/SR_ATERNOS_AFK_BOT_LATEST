@@ -30,8 +30,8 @@ server.listen(PORT, '0.0.0.0', () => {
 const botsConfig = [
   {
     name: 'Server_1_Bot',
-    host: 'SRSHOHAG27-KgbZ.aternos.me',
-    port: 48821,
+    host: 'SROnlyJava.aternos.me',
+    port: 13232,
     username: 'MODERATOR',
     version: false // Auto version detect
   },
