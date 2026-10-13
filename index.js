@@ -4,7 +4,6 @@ const mineflayer = require('mineflayer');
 // --- ১. HTTP Web Server & Bot Status Tracking ---
 const PORT = process.env.PORT || 10000;
 
-// বটের জয়েন স্ট্যাটাস ট্র্যাক করার অবজেক্ট
 const botStatuses = {
   'Server_1_Bot': 'not joined',
   'Server_2_Bot': 'not joined'
@@ -13,7 +12,6 @@ const botStatuses = {
 const server = http.createServer((req, res) => {
   if (req.url === '/' || req.url === '/health') {
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    // URL-এ শুধু বটের নাম এবং joined/not joined দেখাবে
     res.end(JSON.stringify({
       Server_1_Bot: botStatuses['Server_1_Bot'],
       Server_2_Bot: botStatuses['Server_2_Bot']
@@ -32,19 +30,17 @@ server.listen(PORT, '0.0.0.0', () => {
 const botsConfig = [
   {
     name: 'Server_1_Bot',
-    host: 'SRSHOHAG27-KgbZ.aternos.me', // প্রথম সার্ভারের IP
-    port: 48821,                       // প্রথম সার্ভারের Port
-    username: 'MODERATOR',             // ইউজারনেম
-    uuid: '11111111-2222-3333-4444-555555555555', // ইউনিক UUID
-    version: '1.20.4'
+    host: 'SRSHOHAG27-KgbZ.aternos.me',
+    port: 48821,
+    username: 'MODERATOR',
+    version: false // Auto version detect
   },
   {
     name: 'Server_2_Bot',
-    host: 'SRSHOHAG27-duKW.aternos.me', // দ্বিতীয় সার্ভারের IP[cite: 8]
-    port: 28337,                       // দ্বিতীয় সার্ভারের Port[cite: 8]
-    username: 'MODERATOR',             // ইউজারনেম
-    uuid: '99999999-8888-7777-6666-555555555555', // ইউনিক UUID
-    version: '1.20.4'
+    host: 'SRSHOHAG27-duKW.aternos.me',
+    port: 28337,
+    username: 'MODERATOR',
+    version: false // Auto version detect
   }
 ];
 
@@ -55,15 +51,15 @@ function createBot(config) {
     host: config.host,
     port: config.port,
     username: config.username,
-    uuid: config.uuid,
-    version: config.version
+    version: config.version,
+    checkTimeoutInterval: 60000
   });
 
   bot.on('spawn', () => {
     console.log(`>>> [SUCCESS] ${config.name} (${config.username}) joined ${config.host} successfully! <<<`);
-    botStatuses[config.name] = 'joined'; // সার্ভারে ঢুকলে 'joined' হবে
+    botStatuses[config.name] = 'joined';
 
-    // Anti-AFK Swing Arm (প্রতি ২০ সেকেন্ড পর পর)
+    // Anti-AFK Swing Arm
     setInterval(() => {
       if (bot && bot.entity) {
         bot.swingArm('right');
@@ -73,7 +69,7 @@ function createBot(config) {
 
   bot.on('end', (reason) => {
     console.log(`[${config.name} Disconnected] Reason: ${reason}. Reconnecting in 15 seconds...`);
-    botStatuses[config.name] = 'not joined'; // ডিসকানেক্ট হলে 'not joined' হবে
+    botStatuses[config.name] = 'not joined';
     setTimeout(() => createBot(config), 15000);
   });
 
@@ -92,7 +88,7 @@ process.on('unhandledRejection', (reason) => {
   console.error('[System Alert] Unhandled Rejection:', reason);
 });
 
-// Start Both Bots Simultaneously
+// Start Both Bots
 botsConfig.forEach(config => {
   createBot(config);
 });
