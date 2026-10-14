@@ -4,17 +4,14 @@ const mineflayer = require('mineflayer');
 // --- ১. HTTP Web Server & Bot Status Tracking ---
 const PORT = process.env.PORT || 10000;
 
-const botStatuses = {
-  'Server_1_Bot': 'not joined',
-  'Server_2_Bot': 'not joined'
-};
+let botStatus = 'not joined';
 
 const server = http.createServer((req, res) => {
   if (req.url === '/' || req.url === '/health') {
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({
-      Server_1_Bot: botStatuses['Server_1_Bot'],
-      Server_2_Bot: botStatuses['Server_2_Bot']
+      status: botStatus,
+      server: 'SRJavaBE.aternos.me:32953'
     }, null, 2));
   } else {
     res.writeHead(404, { 'Content-Type': 'text/plain' });
@@ -26,38 +23,29 @@ server.listen(PORT, '0.0.0.0', () => {
   console.log(`[HTTP Server] Bot web monitor running on port ${PORT}`);
 });
 
-// --- ২. Two Different Servers Bot Configuration & Logic ---
-const botsConfig = [
-  {
-    name: 'Server_1_Bot',
-    host: 'SROnlyJava.aternos.me',
-    port: 13232,
-    username: 'MODERATOR',
-    version: false // Auto version detect
-  },
-  {
-    name: 'Server_2_Bot',
-    host: 'SRJavaBE.aternos.me',
-    port: 32953,
-    username: 'MODERATOR',
-    version: false // Auto version detect
-  }
-];
+// --- ২. Single Server Bot Configuration & Logic ---
+const botConfig = {
+  name: 'SR_AFK_Bot',
+  host: 'SRJavaBE.aternos.me',
+  port: 32953,
+  username: 'MODERATOR',
+  version: false // Auto version detect
+};
 
-function createBot(config) {
-  console.log(`[Bot] Connecting ${config.name} (${config.username}) to ${config.host}:${config.port}...`);
+function createBot() {
+  console.log(`[Bot] Connecting ${botConfig.name} (${botConfig.username}) to ${botConfig.host}:${botConfig.port}...`);
 
   const bot = mineflayer.createBot({
-    host: config.host,
-    port: config.port,
-    username: config.username,
-    version: config.version,
+    host: botConfig.host,
+    port: botConfig.port,
+    username: botConfig.username,
+    version: botConfig.version,
     checkTimeoutInterval: 60000
   });
 
   bot.on('spawn', () => {
-    console.log(`>>> [SUCCESS] ${config.name} (${config.username}) joined ${config.host} successfully! <<<`);
-    botStatuses[config.name] = 'joined';
+    console.log(`>>> [SUCCESS] ${botConfig.name} (${botConfig.username}) joined ${botConfig.host} successfully! <<<`);
+    botStatus = 'joined';
 
     // Anti-AFK Swing Arm
     setInterval(() => {
@@ -68,14 +56,14 @@ function createBot(config) {
   });
 
   bot.on('end', (reason) => {
-    console.log(`[${config.name} Disconnected] Reason: ${reason}. Reconnecting in 15 seconds...`);
-    botStatuses[config.name] = 'not joined';
-    setTimeout(() => createBot(config), 15000);
+    console.log(`[${botConfig.name} Disconnected] Reason: ${reason}. Reconnecting in 5 seconds...`);
+    botStatus = 'not joined';
+    setTimeout(() => createBot(), 5000); // ৫ সেকেন্ডের মধ্যে রি-জয়েন করবে
   });
 
   bot.on('error', (err) => {
-    console.log(`[${config.name} Error]`, err.message);
-    botStatuses[config.name] = 'not joined';
+    console.log(`[${botConfig.name} Error]`, err.message);
+    botStatus = 'not joined';
   });
 }
 
@@ -88,7 +76,5 @@ process.on('unhandledRejection', (reason) => {
   console.error('[System Alert] Unhandled Rejection:', reason);
 });
 
-// Start Both Bots
-botsConfig.forEach(config => {
-  createBot(config);
-});
+// Start Single Bot
+createBot();
