@@ -11,7 +11,7 @@ const server = http.createServer((req, res) => {
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({
       status: botStatus,
-      server: 'SRJavaBE.aternos.me:32953'
+      server: 'marmot.aternos.host:32953'
     }, null, 2));
   } else {
     res.writeHead(404, { 'Content-Type': 'text/plain' });
@@ -26,7 +26,7 @@ server.listen(PORT, '0.0.0.0', () => {
 // --- ২. Single Server Bot Configuration & Logic ---
 const botConfig = {
   name: 'SR_AFK_Bot',
-  host: 'SRJavaBE.aternos.me',
+  host: 'marmot.aternos.host', // Aternos Dyn IP বসানো হয়েছে
   port: 32953,
   username: 'MODERATOR',
   version: false // Auto version detect
