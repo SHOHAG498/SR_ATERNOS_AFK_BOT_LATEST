@@ -23,14 +23,18 @@ server.listen(PORT, '0.0.0.0', () => {
 });
 
 // --- ২. Minecraft Bot Config & Logic ---
+const SERVER_HOST = 'SRSHOHAG27.aternos.me';
+const SERVER_PORT = 28030;
+
 function createBot() {
   console.log('[Bot] Connecting to Minecraft server as MODERATOR...');
 
   const bot = mineflayer.createBot({
-    host: 'SRSHOHAG27.aternos.me', // মূল Aternos Domain (SRV Auto-Lookup)
+    host: SERVER_HOST,
+    port: SERVER_PORT,
     username: 'MODERATOR',
-    version: false,                 // Auto-detect version
-    auth: 'offline'                 // Cracked server support
+    version: false, // Auto-detect version
+    auth: 'offline' // Cracked server support
   });
 
   bot.on('spawn', () => {
