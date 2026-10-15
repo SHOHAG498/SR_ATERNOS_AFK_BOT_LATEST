@@ -23,8 +23,8 @@ server.listen(PORT, '0.0.0.0', () => {
 });
 
 // --- ২. Minecraft Bot Config & Logic ---
-const SERVER_HOST = 'SRSHOHAG27-duKW.aternos.me';
-const SERVER_PORT = 28337;
+const SERVER_HOST = 'SRJavaBE.aternos.me';
+const SERVER_PORT = 32953;
 
 function createBot() {
   console.log('[Bot] Connecting to Minecraft server as SR_AFK_Bot_1...');
