@@ -1,7 +1,7 @@
 const http = require('http');
 const mineflayer = require('mineflayer');
 
-// --- ১. HTTP Web Server (Render & Cron-job.org Monitoring) ---
+// --- 1. HTTP Web Server (Render & Cron-job.org Monitoring) ---
 const PORT = process.env.PORT || 10000;
 
 const server = http.createServer((req, res) => {
@@ -22,7 +22,7 @@ server.listen(PORT, '0.0.0.0', () => {
   console.log(`[HTTP Server] Bot web monitor running on port ${PORT}`);
 });
 
-// --- ২. Minecraft Bot Config & Logic ---
+// --- 2. Minecraft Bot Config & Logic ---
 const SERVER_HOST = 'SRSHOHAG27.aternos.me';
 const SERVER_PORT = 28030;
 
@@ -32,25 +32,31 @@ function createBot() {
   const bot = mineflayer.createBot({
     host: SERVER_HOST,
     port: SERVER_PORT,
-    username: 'MODERATOR', // নাম পরিবর্তন করে MODERATOR করা হলো
-    version: '1.20.4',
+    username: 'MODERATOR',
+    version: false, // Auto-detect Minecraft version
     auth: 'offline'
   });
 
   bot.on('spawn', () => {
     console.log('>>> [SUCCESS] MODERATOR joined the server! <<<');
 
-    // সার্ভারে ঢোকার পর স্পেক্টেটর মোডে যাওয়ার কমান্ড (যদি অপ দেওয়া থাকে)
+    // Spectator mode automatic command
     setTimeout(() => {
       bot.chat('/gamemode spectator MODERATOR');
     }, 3000);
 
-    // Anti-AFK Swing Arm (২০ সেকেন্ড পর পর হাত নাড়াবে)
+    // Anti-AFK Swing Arm (20 seconds)
     setInterval(() => {
       if (bot && bot.entity) {
         bot.swingArm('right');
       }
     }, 20000);
+  });
+
+  // Auto-respawn logic
+  bot.on('death', () => {
+    console.log('[Bot Alert] MODERATOR has died! Respawning...');
+    bot.respawn();
   });
 
   bot.on('end', (reason) => {
