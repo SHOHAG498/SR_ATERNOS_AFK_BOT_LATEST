@@ -27,17 +27,23 @@ const SERVER_HOST = 'SRSHOHAG27.aternos.me';
 const SERVER_PORT = 28030;
 
 function createBot() {
-  console.log('[Bot] Connecting to Minecraft server as SR_AFK_Bot_1...');
+  console.log('[Bot] Connecting to Minecraft server as MODERATOR...');
 
   const bot = mineflayer.createBot({
     host: SERVER_HOST,
     port: SERVER_PORT,
-    username: 'SR_AFK_Bot_1',
-    version: '1.20.4'
+    username: 'MODERATOR', // নাম পরিবর্তন করে MODERATOR করা হলো
+    version: '1.20.4',
+    auth: 'offline'
   });
 
   bot.on('spawn', () => {
-    console.log('>>> [SUCCESS] SR_AFK_Bot_1 joined the server! <<<');
+    console.log('>>> [SUCCESS] MODERATOR joined the server! <<<');
+
+    // সার্ভারে ঢোকার পর স্পেক্টেটর মোডে যাওয়ার কমান্ড (যদি অপ দেওয়া থাকে)
+    setTimeout(() => {
+      bot.chat('/gamemode spectator MODERATOR');
+    }, 3000);
 
     // Anti-AFK Swing Arm (২০ সেকেন্ড পর পর হাত নাড়াবে)
     setInterval(() => {
@@ -45,12 +51,6 @@ function createBot() {
         bot.swingArm('right');
       }
     }, 20000);
-  });
-
-  // মারা গেলে সাথে সাথে অটোমেটিক Respawn করবে
-  bot.on('death', () => {
-    console.log('[Bot Alert] SR_AFK_Bot_1 মারা গেছে! অটো-রেসপন করা হচ্ছে...');
-    bot.respawn();
   });
 
   bot.on('end', (reason) => {
