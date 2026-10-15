@@ -23,7 +23,7 @@ server.listen(PORT, '0.0.0.0', () => {
 });
 
 // --- ২. Minecraft Bot Config & Logic ---
-const SERVER_HOST = 'blowfish.aternos.host'; // DynIP Host
+const SERVER_HOST = 'SRSHOHAG27.aternos.me'; // DynIP Host
 const SERVER_PORT = 28030;                   // Port
 
 function createBot() {
