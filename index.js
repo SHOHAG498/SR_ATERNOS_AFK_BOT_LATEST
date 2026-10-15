@@ -1,18 +1,17 @@
 const http = require('http');
 const mineflayer = require('mineflayer');
 
-// --- ১. HTTP Web Server & Bot Status Tracking ---
+// --- ১. HTTP Web Server (Render & Cron-job.org Monitoring) ---
 const PORT = process.env.PORT || 10000;
-
-let botStatus = 'not joined';
 
 const server = http.createServer((req, res) => {
   if (req.url === '/' || req.url === '/health') {
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({
-      status: botStatus,
-      server: 'marmot.aternos.host:32953'
-    }, null, 2));
+    res.end(JSON.stringify({ 
+      status: 'OK', 
+      message: 'Render SR AFK Bot Active!', 
+      uptime: Math.floor(process.uptime()) + ' seconds' 
+    }));
   } else {
     res.writeHead(404, { 'Content-Type': 'text/plain' });
     res.end('Not Found');
@@ -23,29 +22,22 @@ server.listen(PORT, '0.0.0.0', () => {
   console.log(`[HTTP Server] Bot web monitor running on port ${PORT}`);
 });
 
-// --- ২. Single Server Bot Configuration & Logic ---
-const botConfig = {
-  name: 'SR_AFK_Bot',
-  host: 'marmot.aternos.host', // Aternos Dyn IP বসানো হয়েছে
-  port: 32953,
-  username: 'MODERATOR',
-  version: false // Auto version detect
-};
+// --- ২. Minecraft Bot Config & Logic ---
+const SERVER_HOST = 'SRSHOHAG27-duKW.aternos.me';
+const SERVER_PORT = 28337;
 
 function createBot() {
-  console.log(`[Bot] Connecting ${botConfig.name} (${botConfig.username}) to ${botConfig.host}:${botConfig.port}...`);
+  console.log('[Bot] Connecting to Minecraft server as SR_AFK_Bot_1...');
 
   const bot = mineflayer.createBot({
-    host: botConfig.host,
-    port: botConfig.port,
-    username: botConfig.username,
-    version: botConfig.version,
-    checkTimeoutInterval: 60000
+    host: SERVER_HOST,
+    port: SERVER_PORT,
+    username: 'SR_AFK_Bot_1',
+    version: '1.20.4'
   });
 
   bot.on('spawn', () => {
-    console.log(`>>> [SUCCESS] ${botConfig.name} (${botConfig.username}) joined ${botConfig.host} successfully! <<<`);
-    botStatus = 'joined';
+    console.log('>>> [SUCCESS] SR_AFK_Bot_1 joined the server! <<<');
 
     // Anti-AFK Swing Arm
     setInterval(() => {
@@ -56,14 +48,12 @@ function createBot() {
   });
 
   bot.on('end', (reason) => {
-    console.log(`[${botConfig.name} Disconnected] Reason: ${reason}. Reconnecting in 5 seconds...`);
-    botStatus = 'not joined';
-    setTimeout(() => createBot(), 5000); // ৫ সেকেন্ডের মধ্যে রি-জয়েন করবে
+    console.log(`[Bot Disconnected] Reason: ${reason}. Reconnecting in 15 seconds...`);
+    setTimeout(createBot, 15000);
   });
 
   bot.on('error', (err) => {
-    console.log(`[${botConfig.name} Error]`, err.message);
-    botStatus = 'not joined';
+    console.log('[Bot Error]', err.message);
   });
 }
 
@@ -76,5 +66,5 @@ process.on('unhandledRejection', (reason) => {
   console.error('[System Alert] Unhandled Rejection:', reason);
 });
 
-// Start Single Bot
+// Start Bot
 createBot();
