@@ -39,12 +39,18 @@ function createBot() {
   bot.on('spawn', () => {
     console.log('>>> [SUCCESS] SR_AFK_Bot_1 joined the server! <<<');
 
-    // Anti-AFK Swing Arm (২০ সেকেন্ড পর পর হাত নাড়াবে)
+    // Anti-AFK Swing Arm (২০ সেকেন্ড পর পর হাত নাড়াবে)
     setInterval(() => {
       if (bot && bot.entity) {
         bot.swingArm('right');
       }
     }, 20000);
+  });
+
+  // মারা গেলে সাথে সাথে অটোমেটিক Respawn করবে
+  bot.on('death', () => {
+    console.log('[Bot Alert] SR_AFK_Bot_1 মারা গেছে! অটো-রেসপন করা হচ্ছে...');
+    bot.respawn();
   });
 
   bot.on('end', (reason) => {
