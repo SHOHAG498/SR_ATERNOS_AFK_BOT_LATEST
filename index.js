@@ -1,7 +1,7 @@
 const http = require('http');
 const mineflayer = require('mineflayer');
 
-// --- ১. HTTP Web Server (Render & Cron-job.org Monitoring) ---
+// --- ১. HTTP Web Server (Render & Keep-Alive Monitoring) ---
 const PORT = process.env.PORT || 10000;
 
 const server = http.createServer((req, res) => {
@@ -23,18 +23,14 @@ server.listen(PORT, '0.0.0.0', () => {
 });
 
 // --- ২. Minecraft Bot Config & Logic ---
-const SERVER_HOST = 'SRSHOHAG27.aternos.me'; // DynIP Host
-const SERVER_PORT = 28030;                   // Port
-
 function createBot() {
   console.log('[Bot] Connecting to Minecraft server as MODERATOR...');
 
   const bot = mineflayer.createBot({
-    host: SERVER_HOST,
-    port: SERVER_PORT,
+    host: 'SRSHOHAG27.aternos.me', // মূল Aternos Domain (SRV Auto-Lookup)
     username: 'MODERATOR',
-    version: false, // Auto-detect version
-    auth: 'offline' // Cracked server support
+    version: false,                 // Auto-detect version
+    auth: 'offline'                 // Cracked server support
   });
 
   bot.on('spawn', () => {
