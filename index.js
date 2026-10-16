@@ -33,23 +33,38 @@ function createBot() {
     host: SERVER_HOST,
     port: SERVER_PORT,
     username: 'SR_AFK_Bot_1',
-    version: '1.20.4'
+    version: '1.20.4',
+    checkTimeoutInterval: 60000,
+    connectTimeout: 45000
   });
 
   bot.on('spawn', () => {
     console.log('>>> [SUCCESS] SR_AFK_Bot_1 joined the server! <<<');
 
-    // Anti-AFK Swing Arm
+    // Anti-AFK: প্রতি ৫ সেকেন্ড পরপর হাত এবং মাথা নাড়াবে
     setInterval(() => {
       if (bot && bot.entity) {
+        // ১. হাত নাড়ানো
         bot.swingArm('right');
+
+        // ২. মাথা ঘুরানো (র্যান্ডম দিকে তাকাবে)
+        const yaw = (Math.random() - 0.5) * Math.PI * 2;
+        const pitch = (Math.random() - 0.5) * Math.PI;
+        bot.look(yaw, pitch, true);
       }
-    }, 20000);
+    }, 5000); // ৫০০০ মি.সে. = ৫ সেকেন্ড
   });
 
+  // অটো-রিস্পন (মরে গেলে বেঁচে উঠবে)
+  bot.on('death', () => {
+    console.log('[Bot Alert] Bot died! Respawning...');
+    bot.respawn();
+  });
+
+  // অটো-রিকানেক্ট (ডিসকানেক্ট হলে ৬ সেকেন্ড পর জয়েন করবে)
   bot.on('end', (reason) => {
-    console.log(`[Bot Disconnected] Reason: ${reason}. Reconnecting in 15 seconds...`);
-    setTimeout(createBot, 15000);
+    console.log(`[Bot Disconnected] Reason: ${reason}. Reconnecting in 6 seconds...`);
+    setTimeout(createBot, 6000); // ৬০০০ মি.সে. = ৬ সেকেন্ড
   });
 
   bot.on('error', (err) => {
